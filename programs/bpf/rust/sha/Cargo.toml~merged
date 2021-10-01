@@ -1,0 +1,45 @@
+[package]
+<<<<<<< HEAD
+<<<<<<< HEAD:programs/bpf/rust/sha/Cargo.toml
+name = "solana-bpf-rust-sha"
+version = "1.6.25"
+=======
+name = "solana-bpf-rust-ro-account_modify"
+version = "1.8.0"
+>>>>>>> 229b378ed1b1e26c04a9c5f537fc99e738d998e8:programs/bpf/rust/ro_account_modify/Cargo.toml
+=======
+name = "solana-bpf-rust-sha"
+version = "1.8.0"
+>>>>>>> 229b378ed1b1e26c04a9c5f537fc99e738d998e8
+description = "Solana BPF test program written in Rust"
+authors = ["Solana Maintainers <maintainers@solana.foundation>"]
+repository = "https://github.com/solana-labs/solana"
+license = "Apache-2.0"
+homepage = "https://solana.com/"
+<<<<<<< HEAD
+<<<<<<< HEAD:programs/bpf/rust/sha/Cargo.toml
+=======
+>>>>>>> 229b378ed1b1e26c04a9c5f537fc99e738d998e8
+documentation = "https://docs.rs/solana-bpf-rust-sha"
+edition = "2018"
+
+[dependencies]
+<<<<<<< HEAD
+solana-program = { path = "../../../../sdk/program", version = "=1.6.25" }
+=======
+documentation = "https://docs.rs/solana-bpf-rust-ro-modify"
+edition = "2018"
+
+[dependencies]
+solana-program = { path = "../../../../sdk/program", version = "=1.8.0" }
+>>>>>>> 229b378ed1b1e26c04a9c5f537fc99e738d998e8:programs/bpf/rust/ro_account_modify/Cargo.toml
+=======
+blake3 = "1.0.0"
+solana-program = { path = "../../../../sdk/program", version = "=1.8.0" }
+>>>>>>> 229b378ed1b1e26c04a9c5f537fc99e738d998e8
+
+[lib]
+crate-type = ["cdylib"]
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
