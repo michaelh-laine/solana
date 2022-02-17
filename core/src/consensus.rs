@@ -976,10 +976,14 @@ impl Tower {
                     slot, vote.slot, lockout, fork_stake, total_stake
                 );
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if vote.confirmation_count as usize > self.threshold_depth {
 =======
                 if vote.confirmation_count as usize > VOTE_THRESHOLD_DEPTH {
 >>>>>>> 1368fdbc07... Final refactoring of Laine performance modifications
+=======
+                if vote.confirmation_count as usize > FORK_DEPTH_THRESHOLD_HALT {
+>>>>>>> d3d5805ca9... laine_perf_tuning_1.9.7
                     for old_vote in &self.vote_state.votes {
                         if old_vote.slot == vote.slot
                             && old_vote.confirmation_count == vote.confirmation_count
