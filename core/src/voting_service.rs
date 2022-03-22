@@ -82,16 +82,22 @@ impl VotingService {
             inc_new_counter_info!("tower_save-ms", measure.as_ms() as usize);
         }
 
-        let target_address = if send_to_tpu_vote_port {
-            crate::banking_stage::next_leader_tpu_vote(cluster_info, poh_recorder)
-        } else {
-            crate::banking_stage::next_leader_tpu(cluster_info, poh_recorder)
-        };
+        let target_offsets = vec![2,6,12,24];
 
         let mut measure = Measure::start("vote_tx_send-ms");
-        let target_address = target_address.unwrap_or_else(|| cluster_info.my_contact_info().tpu);
-        let wire_vote_tx = bincode::serialize(vote_op.tx()).expect("vote serialization failure");
-        let _ = send_wire_transaction(&wire_vote_tx, &target_address);
+        for offset in target_offsets {
+            info!("Sending votes to leader at offset {:?}", offset);
+            let target_address = if send_to_tpu_vote_port {
+                crate::banking_stage::next_leader_tpu_vote(cluster_info, poh_recorder, offset)
+            } else {
+                crate::banking_stage::next_leader_tpu(cluster_info, poh_recorder, offset)
+            };
+            
+            let target_address = target_address.unwrap_or_else(|| cluster_info.my_contact_info().tpu);
+            let wire_vote_tx = bincode::serialize(vote_op.tx()).expect("vote serialization failure");
+            let _ = send_wire_transaction(&wire_vote_tx, &target_address);
+            
+        }
         measure.stop();
         inc_new_counter_info!("vote_tx_send-ms", measure.as_ms() as usize);
 

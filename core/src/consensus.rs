@@ -100,7 +100,7 @@ impl SwitchForkDecision {
     }
 }
 
-pub const VOTE_THRESHOLD_DEPTH: usize = 8;
+pub const VOTE_THRESHOLD_DEPTH: usize = 6;
 pub const SWITCH_FORK_THRESHOLD: f64 = 0.38;
 
 pub type Result<T> = std::result::Result<T, TowerError>;
@@ -975,7 +975,11 @@ impl Tower {
                     "fork_stake slot: {}, vote slot: {}, lockout: {} fork_stake: {} total_stake: {}",
                     slot, vote.slot, lockout, fork_stake, total_stake
                 );
+<<<<<<< HEAD
                 if vote.confirmation_count as usize > self.threshold_depth {
+=======
+                if vote.confirmation_count as usize > VOTE_THRESHOLD_DEPTH {
+>>>>>>> 1368fdbc07... Final refactoring of Laine performance modifications
                     for old_vote in &self.vote_state.votes {
                         if old_vote.slot == vote.slot
                             && old_vote.confirmation_count == vote.confirmation_count
