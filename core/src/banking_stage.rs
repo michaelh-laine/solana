@@ -900,7 +900,7 @@ impl BankingStage {
             ForwardOption::ForwardTransaction => {
                 next_leader_tpu_forwards(cluster_info, poh_recorder)
             }
-            ForwardOption::ForwardTpuVote => next_leader_tpu_vote(cluster_info, poh_recorder),
+            ForwardOption::ForwardTpuVote => next_leader_tpu_vote(cluster_info, poh_recorder, FORWARD_TRANSACTIONS_TO_LEADER_AT_SLOT_OFFSET),
         };
         let addr = match addr {
             Some(addr) => addr,
@@ -2031,36 +2031,40 @@ impl BankingStage {
 pub(crate) fn next_leader_tpu(
     cluster_info: &ClusterInfo,
     poh_recorder: &Mutex<PohRecorder>,
+    leader_offset: u64,
 ) -> Option<std::net::SocketAddr> {
-    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu)
+    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu, leader_offset)
 }
 
 fn next_leader_tpu_forwards(
     cluster_info: &ClusterInfo,
     poh_recorder: &Mutex<PohRecorder>,
 ) -> Option<std::net::SocketAddr> {
-    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu_forwards)
+    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu_forwards, FORWARD_TRANSACTIONS_TO_LEADER_AT_SLOT_OFFSET)
 }
 
 pub(crate) fn next_leader_tpu_vote(
     cluster_info: &ClusterInfo,
     poh_recorder: &Mutex<PohRecorder>,
+    leader_offset: u64,
 ) -> Option<std::net::SocketAddr> {
-    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu_vote)
+    next_leader_x(cluster_info, poh_recorder, |leader| leader.tpu_vote, leader_offset)
 }
 
 fn next_leader_x<F>(
     cluster_info: &ClusterInfo,
     poh_recorder: &Mutex<PohRecorder>,
     port_selector: F,
+    leader_offset: u64,
 ) -> Option<std::net::SocketAddr>
 where
     F: FnOnce(&ContactInfo) -> SocketAddr,
 {
+    
     let leader_pubkey = poh_recorder
         .lock()
         .unwrap()
-        .leader_after_n_slots(FORWARD_TRANSACTIONS_TO_LEADER_AT_SLOT_OFFSET);
+        .leader_after_n_slots(leader_offset);
     if let Some(leader_pubkey) = leader_pubkey {
         cluster_info.lookup_contact_info(&leader_pubkey, port_selector)
     } else {

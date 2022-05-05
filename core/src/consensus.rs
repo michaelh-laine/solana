@@ -866,7 +866,7 @@ impl Tower {
                     "fork_stake slot: {}, vote slot: {}, lockout: {} fork_stake: {} total_stake: {}",
                     slot, vote.slot, lockout, fork_stake, total_stake
                 );
-                if vote.confirmation_count as usize > self.threshold_depth {
+                if vote.confirmation_count as usize > VOTE_THRESHOLD_DEPTH {
                     for old_vote in &self.vote_state.votes {
                         if old_vote.slot == vote.slot
                             && old_vote.confirmation_count == vote.confirmation_count
