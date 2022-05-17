@@ -80,12 +80,17 @@ impl VotingService {
             inc_new_counter_info!("tower_save-ms", measure.as_ms() as usize);
         }
 
-        let target_address = if send_to_tpu_vote_port {
-            crate::banking_stage::next_leader_tpu_vote(cluster_info, poh_recorder)
-        } else {
-            crate::banking_stage::next_leader_tpu(cluster_info, poh_recorder)
-        };
-        let _ = cluster_info.send_transaction(vote_op.tx(), target_address);
+        let target_offsets = vec![2,6,12,24];
+
+        for offset in target_offsets {
+            info!("Sending votes to leader at offset {:?}", offset);
+            let target_address = if send_to_tpu_vote_port {
+                crate::banking_stage::next_leader_tpu_vote(cluster_info, poh_recorder, offset)
+            } else {
+                crate::banking_stage::next_leader_tpu(cluster_info, poh_recorder, offset)
+            };
+            let _ = cluster_info.send_transaction(vote_op.tx(), target_address);
+        }
 
         match vote_op {
             VoteOp::PushVote {
